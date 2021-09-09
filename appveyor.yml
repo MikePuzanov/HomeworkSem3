@@ -1,0 +1,3 @@
+build_script:
+- For /R %%I in (*.sln) do dotnet test %%I
+test: of
