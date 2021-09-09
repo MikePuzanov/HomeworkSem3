@@ -23,6 +23,7 @@ namespace ParallelMatrixMultiplication
                 matrixSecond = FileFunctions.CreateMatrix((args[1]));
             });            */
             var matrix = MatrixFunctions.MatrixMuptiplication(matrixFirst, matrixSecond);
+            FileFunctions.CreateFileWithMatrix(args[2], matrix);
         }
     }
 }

@@ -40,17 +40,17 @@ namespace ParallelMatrixMultiplication
             var matrix = new int[size.lenght, size.width];
             using var file = new StreamReader(filePath);
             string line = file.ReadLine();
+            var index = 0;
             while (line != null)
             {
-                var index = 0;
                 string[] lineDrop = line.Split(" ", StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < size.lenght; ++i)
                 {
                     matrix[index, i] = Int32.Parse(lineDrop[i]);
                 }
+                index++;
                 line = file.ReadLine();
             }
-
             return matrix;
         }
 
@@ -72,10 +72,10 @@ namespace ParallelMatrixMultiplication
             var file = new StreamWriter(newFile);
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
-                var line = "";
-                for (int j = 0; j < matrix.Length; j++)
+                string line = "";
+                for (int j = 0; j < matrix.GetLength(1); j++)
                 {
-                    line = $"{matrix[i, j]} ";
+                    line += $"{matrix[i, j]} ";
                 }
                 file.WriteLine(line);
             }
