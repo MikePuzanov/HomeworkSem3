@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelMatrixMultiplication", "ParallelMatrixMultiplication\ParallelMatrixMultiplication.csproj", "{7835B9F5-62D6-4600-B715-C8BEBCEF58E6}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelMatrixMultiplication", "ParallelMatrixMultiplication\ParallelMatrixMultiplication.csproj", "{A8AF63A3-1364-4FA2-8832-D27A339FAD1B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7835B9F5-62D6-4600-B715-C8BEBCEF58E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7835B9F5-62D6-4600-B715-C8BEBCEF58E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7835B9F5-62D6-4600-B715-C8BEBCEF58E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7835B9F5-62D6-4600-B715-C8BEBCEF58E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8AF63A3-1364-4FA2-8832-D27A339FAD1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8AF63A3-1364-4FA2-8832-D27A339FAD1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8AF63A3-1364-4FA2-8832-D27A339FAD1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8AF63A3-1364-4FA2-8832-D27A339FAD1B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3EC4E190-8ABB-4682-A8B2-190BAE5FEFB0}
 	EndGlobalSection
 EndGlobal
