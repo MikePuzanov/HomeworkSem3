@@ -21,7 +21,7 @@ namespace ParallelMatrixMultiplication
             threads[1] = new Thread(() =>
             {
                 matrixSecond = FileFunctions.CreateMatrix((args[1]));
-            });*/
+            });            */
             var matrix = MatrixFunctions.MatrixMuptiplication(matrixFirst, matrixSecond);
         }
     }
