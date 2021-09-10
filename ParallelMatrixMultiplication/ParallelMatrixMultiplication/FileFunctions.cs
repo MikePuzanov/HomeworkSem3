@@ -8,14 +8,23 @@ namespace ParallelMatrixMultiplication
     /// </summary>
     public static class FileFunctions
     {
+        private static void CheckFilePath(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                throw new FilePathException("Error file path!");
+            }
+        }
+        
         private static (int, int) CountSizeMatrix(string filePath)
         {
+            CheckFilePath((filePath));
             using var file = new StreamReader(filePath);
             string line = file.ReadLine();
             int size = 0;
-            if (line == null)
+            if (string.IsNullOrEmpty(line))
             {
-                throw new Exception();
+                throw new EmptyFileException("File is empty!");
             }
             string[] lineDrop = line.Split(" ", StringSplitOptions.RemoveEmptyEntries);
             while (line != null)
@@ -27,15 +36,11 @@ namespace ParallelMatrixMultiplication
         }
 
         /// <summary>
-        /// Create Marrix from file
+        /// Create Matrix from file
         /// </summary>
         public static int[,] CreateMatrix(string filePath)
         {
-            if (filePath == "")
-            {
-                throw new Exception();
-            }
-
+            CheckFilePath((filePath));
             (int lenght, int width) size = CountSizeMatrix((filePath));
             var matrix = new int[size.lenght, size.width];
             using var file = new StreamReader(filePath);
