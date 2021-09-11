@@ -8,7 +8,7 @@ namespace ParallelMatrixMultiplication
     /// </summary>
     public static class MatrixFunctions
     {
-        public static int[,] MatrixMultiplication(int[,] matrix1, int[,] matrix2)
+        public static int[,] MatrixMultiplicationParallel(int[,] matrix1, int[,] matrix2)
         {
             if (matrix1.GetLength(1) != matrix2.GetLength(0))
             {
@@ -38,7 +38,26 @@ namespace ParallelMatrixMultiplication
 
             return matrix;
         }
-
+        
+        public static int[,] MatrixMultiplication(int[,] matrix1, int[,] matrix2)
+        {
+            if (matrix1.GetLength(1) != matrix2.GetLength(0))
+            {
+                throw new MultiplicationException("Number of columns in the first matrix are not equal to the rows in the second matrix!");
+            }
+            var matrix = new int[matrix1.GetLength(1), matrix1.GetLength(0)];
+            for (int i = 0; i < matrix1.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix2.GetLength(1); j++)
+                {
+                        for (int k = 0; k < matrix1.GetLength((0)); ++k)
+                        {
+                            matrix[i, j] += matrix1[i, k] * matrix2[k, j];
+                        }
+                }
+            }
+            
+            return matrix;
+        }
     }
-    
 }

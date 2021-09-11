@@ -2,7 +2,7 @@ using NUnit.Framework;
 
 namespace ParallelMatrixMultiplication.Test
 {
-    public class Tests
+    public class MatrixFunctionTest
     {
         [SetUp]
         public void Setup()
@@ -12,7 +12,7 @@ namespace ParallelMatrixMultiplication.Test
         [Test]
         public void Test1()
         {
-            Assert.Pass();
+            
         }
     }
 }
