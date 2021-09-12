@@ -6,6 +6,9 @@ namespace ParallelMatrixMultiplication
 {
     public class FilePathException : Exception
     {
+        /// <summary>
+        /// then filePath is abnormal
+        /// </summary>
         public FilePathException()
         {
         }

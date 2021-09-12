@@ -4,6 +4,9 @@ using System.Text;
 
 namespace ParallelMatrixMultiplication
 {
+    /// <summary>
+    /// then we couldn't multiplication matrices
+    /// </summary>
     public class MultiplicationException : Exception
     {
         public MultiplicationException()

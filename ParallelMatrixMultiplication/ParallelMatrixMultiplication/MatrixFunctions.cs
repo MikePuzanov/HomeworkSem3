@@ -24,13 +24,14 @@ namespace ParallelMatrixMultiplication
                 {
                     for (int j = 0; j < matrix2.GetLength(1); j++)
                     {
-                        for (int k = 0; k < matrix1.GetLength((0)); ++k)
+                        for (int k = 0; k < matrix1.GetLength((0)); k++)
                         {
                             matrix[line, j] += matrix1[line, k] * matrix2[k, j];
                         }
                     }
                 });
             }
+            
             foreach (var thread in threads)
                 thread.Start();
             foreach (var thread in threads)
