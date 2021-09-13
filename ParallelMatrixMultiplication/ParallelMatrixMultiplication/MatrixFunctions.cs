@@ -14,7 +14,7 @@ namespace ParallelMatrixMultiplication
             {
                 throw new MultiplicationException("Number of columns in the first matrix are not equal to the rows in the second matrix!");
             }
-            var matrix = new int[matrix1.GetLength(1), matrix1.GetLength(0)];
+            var matrix = new int[matrix1.GetLength(0), matrix1.GetLength(1)];
             var threads = new Thread[matrix1.GetLength(0)];
             var results = new int[threads.Length, threads.Length];
             for (int i = 0; i < matrix1.GetLength(0); i++)
@@ -51,7 +51,7 @@ namespace ParallelMatrixMultiplication
             {
                 for (int j = 0; j < matrix2.GetLength(1); j++)
                 {
-                        for (int k = 0; k < matrix1.GetLength((0)); ++k)
+                        for (int k = 0; k < matrix1.GetLength((0)); k++)
                         {
                             matrix[i, j] += matrix1[i, k] * matrix2[k, j];
                         }

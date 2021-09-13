@@ -21,8 +21,8 @@ namespace ParallelMatrixMultiplication
             var matrixTest1 = MatrixFunctions.MatrixMultiplicationParallel(matrixTest, matrixTest);
             stopWatch1.Stop();
             TimeSpan timeParallel = stopWatch1.Elapsed;
-            Console.WriteLine($"Время обычной работы: {time}"); 
-            Console.WriteLine($"Время паралельной работы: {timeParallel}");
+            Console.WriteLine($"Время обычного умножения матриц 1000*1000: {time}"); 
+            Console.WriteLine($"Время параллельного умножения матриц 1000*1000: {timeParallel}");
             var matrix = MatrixFunctions.MatrixMultiplicationParallel(matrixFirst, matrixSecond);
             FileFunctions.CreateFileWithMatrix(args[2], matrix);
         }

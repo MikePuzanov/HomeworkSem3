@@ -21,7 +21,7 @@ namespace ParallelMatrixMultiplication.Test
         [Test]
         public void TestEmptyFile()
         {
-            Assert.Throws<EmptyFileException>(() => FileFunctions.CreateMatrix(null));
+            Assert.Throws<EmptyFileException>(() => FileFunctions.CreateMatrix("../../../EmptyFileTest.txt"));
         }
     }
 }
