@@ -39,7 +39,7 @@ namespace ParallelMatrixMultiplication.Test
             var matrixTest = new int[1000,1000];
             Stopwatch stopWatch1 = new Stopwatch();
             stopWatch1.Start();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 var testTime =MatrixFunctions.MatrixMultiplicationParallel(matrixTest, matrixTest);
             }
@@ -47,7 +47,7 @@ namespace ParallelMatrixMultiplication.Test
             var timeParallel = stopWatch1.ElapsedMilliseconds;
             Stopwatch stopWatch2 = new Stopwatch();
             stopWatch2.Start();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 var matrixAnother = MatrixFunctions.MatrixMultiplication(matrixTest, matrixTest);
             }
