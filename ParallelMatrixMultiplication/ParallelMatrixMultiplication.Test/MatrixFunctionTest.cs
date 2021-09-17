@@ -34,7 +34,7 @@ namespace ParallelMatrixMultiplication.Test
         }
         
         [Test]
-        public void TestAreParallelFaster()
+        public void TestIsParallelFaster()
         {
             var matrixTest = new int[1000,1000];
             Stopwatch stopWatch1 = new Stopwatch();
