@@ -37,22 +37,22 @@ namespace ParallelMatrixMultiplication.Test
         public void TestIsParallelFaster()
         {
             var matrixTest = new int[1000,1000];
-            Stopwatch stopWatch1 = new Stopwatch();
-            stopWatch1.Start();
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             for (int i = 0; i < 5; i++)
             {
                 var testTime =MatrixFunctions.MatrixMultiplicationParallel(matrixTest, matrixTest);
             }
-            stopWatch1.Stop();
-            var timeParallel = stopWatch1.ElapsedMilliseconds;
-            Stopwatch stopWatch2 = new Stopwatch();
-            stopWatch2.Start();
+            stopWatch.Stop();
+            var timeParallel = stopWatch.ElapsedMilliseconds / 5;
+            Stopwatch stopWatchNormal = new Stopwatch();
+            stopWatchNormal.Restart();
             for (int i = 0; i < 5; i++)
             {
                 var matrixAnother = MatrixFunctions.MatrixMultiplication(matrixTest, matrixTest);
             }
-            stopWatch2.Stop();
-            var time = stopWatch2.ElapsedMilliseconds;
+            stopWatchNormal.Stop();
+            var time = stopWatchNormal.ElapsedMilliseconds / 5;
             Assert.IsTrue(timeParallel < time);
         }
 
