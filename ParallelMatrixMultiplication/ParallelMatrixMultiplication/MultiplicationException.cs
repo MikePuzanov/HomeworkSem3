@@ -5,7 +5,7 @@ using System.Text;
 namespace ParallelMatrixMultiplication
 {
     /// <summary>
-    /// then we couldn't multiplication matrices
+    /// then matrices cannott be multiplied
     /// </summary>
     public class MultiplicationException : Exception
     {

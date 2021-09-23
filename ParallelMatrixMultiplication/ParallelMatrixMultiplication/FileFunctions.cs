@@ -41,15 +41,15 @@ namespace ParallelMatrixMultiplication
         public static int[,] CreateMatrix(string filePath)
         {
             CheckFilePath((filePath));
-            (int lenght, int width) size = CountSizeMatrix((filePath));
-            var matrix = new int[size.lenght, size.width];
+            (int length, int width) size = CountSizeMatrix((filePath));
+            var matrix = new int[size.length, size.width];
             using var file = new StreamReader(filePath);
             string line = file.ReadLine();
             var index = 0;
             while (line != null)
             {
                 string[] lineDrop = line.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < size.lenght; ++i)
+                for (int i = 0; i < size.length; ++i)
                 {
                     matrix[index, i] = Int32.Parse(lineDrop[i]);
                 }
@@ -64,17 +64,14 @@ namespace ParallelMatrixMultiplication
         /// </summary>
         public static void CreateFileWithMatrix(string filePath, int[,] matrix)
         {
-            if (filePath == "")
-            {
-                throw new Exception();
-            }
+            CheckFilePath((filePath));
             var fileOut = new FileInfo(filePath);
             if (fileOut.Exists)
             {
                 fileOut.Delete();
             }
             using var newFile = new FileStream(filePath, FileMode.Create);
-            var file = new StreamWriter(newFile);
+            using var file = new StreamWriter(newFile);
             for (int i = 0; i < matrix.GetLength(0); i++)
             {
                 string line = "";
