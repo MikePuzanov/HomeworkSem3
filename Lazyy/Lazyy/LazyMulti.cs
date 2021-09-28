@@ -4,29 +4,29 @@ namespace Lazyy
 {
     public class LazyMulti<T> : ILazy<T>
     {
-        private T Value;
-        private bool IsGenerate = false;
-        private Func<T> Supplier;
-        private Object lockObject = new Object();
+        private T _value;
+        private bool _isGenerate = false;
+        private Func<T> _supplier;
+        private readonly Object _lockObject = new Object();
         
         public LazyMulti(Func<T> supplierNew)
         {
-            Supplier = supplierNew ?? throw new NullReferenceException();
+            _supplier = supplierNew ?? throw new NullReferenceException();
         }
         
         public T Get()
         {
-            if (IsGenerate)
+            if (_isGenerate)
             {
-                return Value;
+                return _value;
             }
 
-            lock (this.lockObject)
+            lock (this._lockObject)
             {
-                IsGenerate = true;
-                Value = Supplier();
-                Supplier = null;
-                return Value;
+                _isGenerate = true;
+                _value = _supplier();
+                _supplier = null;
+                return _value;
             }
         }
     }

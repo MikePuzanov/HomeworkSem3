@@ -4,27 +4,27 @@ namespace Lazyy
 {
     public class LazySingle<T> : ILazy<T>
     {
-        private T Value;
-        private Func<T> Supplier;
-        private bool IsGenerate = false;
+        private T _value;
+        private Func<T> _supplier;
+        private bool _isGenerate = false;
         
         
         public LazySingle(Func<T> supplierNew)
         {
-            Supplier = supplierNew ?? throw new NullReferenceException();
+            _supplier = supplierNew ?? throw new NullReferenceException();
         }
 
         public T Get()
         {
-            if (IsGenerate)
+            if (_isGenerate)
             {
-                return Value;
+                return _value;
             }
 
-            IsGenerate = true;
-            Value = Supplier();
-            Supplier = null;
-            return Value;
+            _isGenerate = true;
+            _value = _supplier();
+            _supplier = null;
+            return _value;
         }
     }
 }
