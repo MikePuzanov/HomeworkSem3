@@ -2,6 +2,9 @@
 
 namespace Lazyy
 {
+    /// <summary>
+    /// реаилизация однопоточного режима
+    /// </summary>
     public class LazySingle<T> : ILazy<T>
     {
         private T _value;

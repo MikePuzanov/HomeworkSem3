@@ -2,6 +2,9 @@
 
 namespace Lazyy
 {
+    /// <summary>
+    /// создает обьекты для работы либо в однопоточном, лио многопоточном режиме
+    /// </summary>
     public class LazyFactory<T>
     {
         public static LazySingle<T> CreateSingleLazy(Func<T> supplier)

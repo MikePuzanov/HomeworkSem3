@@ -2,6 +2,9 @@
 
 namespace Lazyy
 {
+    /// <summary>
+    /// реаилизация многопоточного режима
+    /// </summary>
     public class LazyMulti<T> : ILazy<T>
     {
         private T _value;
