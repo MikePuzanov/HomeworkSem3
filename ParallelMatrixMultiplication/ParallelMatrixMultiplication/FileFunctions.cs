@@ -4,7 +4,7 @@ using System.IO;
 namespace ParallelMatrixMultiplication
 {
     /// <summary>
-    /// File's function
+    /// Functions for working with files
     /// </summary>
     public static class FileFunctions
     {
@@ -16,7 +16,7 @@ namespace ParallelMatrixMultiplication
             }
         }
         
-        private static (int, int) CountSizeMatrix(string filePath)
+        private static (int, int) CountMatrixSize(string filePath)
         {
             CheckFilePath((filePath));
             using var file = new StreamReader(filePath);
@@ -41,7 +41,7 @@ namespace ParallelMatrixMultiplication
         public static int[,] CreateMatrix(string filePath)
         {
             CheckFilePath((filePath));
-            (int length, int width) size = CountSizeMatrix((filePath));
+            (int length, int width) size = CountMatrixSize((filePath));
             var matrix = new int[size.length, size.width];
             using var file = new StreamReader(filePath);
             string line = file.ReadLine();

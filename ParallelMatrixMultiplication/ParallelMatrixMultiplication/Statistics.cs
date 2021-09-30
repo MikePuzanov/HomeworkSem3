@@ -5,9 +5,15 @@ using System.Linq;
 
 namespace ParallelMatrixMultiplication
 {
+    /// <summary>
+    /// class for collecting statistics
+    /// </summary>
     public class Statistics
     {
-        public static void CollectStaticsFromMatrix(int row, int column, int count)
+        /// <summary>
+        /// Collect statistics from matrix
+        /// </summary>
+        public static void CollectStatisticsFromMatrix(int row, int column, int count)
         {
             (var timeParallel, var timeNotParallel) = GetTimeMatrixMultiplication(count, row, column);
             var result = GetStatistics(timeParallel, timeNotParallel);

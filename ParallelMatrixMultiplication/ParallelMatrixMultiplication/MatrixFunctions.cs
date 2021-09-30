@@ -8,6 +8,9 @@ namespace ParallelMatrixMultiplication
     /// </summary>
     public static class MatrixFunctions
     {
+        /// <summary>
+        /// Parallel matrix multiplication
+        /// </summary>
         public static int[,] MatrixMultiplicationParallel(int[,] matrix1, int[,] matrix2)
         {
             if (matrix1.GetLength(1) != matrix2.GetLength(0))
@@ -45,6 +48,9 @@ namespace ParallelMatrixMultiplication
             return matrix;
         }
         
+        /// <summary>
+        /// Not parallel matrix multiplication
+        /// </summary>
         public static int[,] MatrixMultiplication(int[,] matrix1, int[,] matrix2)
         {
             if (matrix1.GetLength(1) != matrix2.GetLength(0))
