@@ -10,7 +10,7 @@ namespace Lazyy.Test
         public void NormalWorkForMultiTest()
         {
             var number = 2;
-            var lazyMulti = LazyFactory<int>.CreateMultiLazy(() =>
+            var lazyMulti = LazyFactory.CreateMultiLazy<int>(() =>
             {
                 number *= number;
                 return number;
@@ -22,11 +22,11 @@ namespace Lazyy.Test
                 threads[i] = new Thread(() => lazyMulti.Get());
             }
 
-            foreach (var thread  in threads)
+            foreach (var thread in threads)
             {
                 thread.Start();
             }
-            foreach (var thread  in threads)
+            foreach (var thread in threads)
             {
                 thread.Join();
             }
@@ -36,7 +36,7 @@ namespace Lazyy.Test
         [Test]
         public void NullExceptionTest()
         {
-            Assert.Throws<NullReferenceException>(() => LazyFactory<int>.CreateMultiLazy(null));
+            Assert.Throws<NullReferenceException>(() => LazyFactory.CreateMultiLazy<int>(null));
         }
     }
 }

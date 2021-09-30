@@ -3,7 +3,7 @@
 namespace Lazyy
 {
     /// <summary>
-    /// реаилизация однопоточного режима
+    /// реализация однопоточного режима
     /// </summary>
     public class LazySingle<T> : ILazy<T>
     {
@@ -11,12 +11,15 @@ namespace Lazyy
         private Func<T> _supplier;
         private bool _isGenerate = false;
         
-        
+        /// <summary>
+        /// создает обьект в однопоточном режиме
+        /// </summary>
         public LazySingle(Func<T> supplierNew)
-        {
-            _supplier = supplierNew ?? throw new NullReferenceException();
-        }
-
+            => _supplier = supplierNew ?? throw new NullReferenceException();
+        
+        /// <summary>
+        /// вызывает вычисление один раз и возвращает один и тот же обьект, полученный при вычислении
+        /// </summary>
         public T Get()
         {
             if (_isGenerate)

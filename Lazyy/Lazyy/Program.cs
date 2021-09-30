@@ -9,12 +9,12 @@ namespace Lazyy
         {
             var number1 = 2;
             var number2 = 2;
-            var single = LazyFactory<int>.CreateSingleLazy(() =>
+            var single = LazyFactory.CreateMultiLazy<int>(() =>
             {
                 number1 += number1;
                 return number1;
             });
-            var multi = LazyFactory<int>.CreateMultiLazy(() =>
+            var multi = LazyFactory.CreateMultiLazy<int>(() =>
             {
                 number2 *= number2;
                 return number2;
@@ -30,19 +30,17 @@ namespace Lazyy
             {
                 Console.WriteLine(multi.Get());
                 Console.WriteLine("!!!");
-                var get = single.Get();
-                Console.WriteLine(get);
+                Console.WriteLine(single.Get());
                 Console.WriteLine("!!!");
             }
-            foreach (var thread  in threads)
+            foreach (var thread in threads)
             {
                 thread.Start();
             }
-            foreach (var thread  in threads)
+            foreach (var thread in threads)
             {
                 thread.Join();
             }
-            
         }
     }
 }

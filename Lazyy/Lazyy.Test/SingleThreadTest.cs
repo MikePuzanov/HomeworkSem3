@@ -9,7 +9,7 @@ namespace Lazyy.Test
         public void NormalWorkForSingleTest()
         {
             var number = 2;
-            var lazySingle = LazyFactory<int>.CreateSingleLazy(() =>
+            var lazySingle = LazyFactory.CreateSingleLazy<int>(() =>
             {
                 number += number;
                 return number;
@@ -23,7 +23,7 @@ namespace Lazyy.Test
         [Test]
         public void NullExceptionTest()
         {
-            Assert.Throws<NullReferenceException>(() => LazyFactory<int>.CreateSingleLazy(null));
+            Assert.Throws<NullReferenceException>(() => LazyFactory.CreateSingleLazy<int>(null));
         }
     }
 }
