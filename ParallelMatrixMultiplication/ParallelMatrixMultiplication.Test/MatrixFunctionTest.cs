@@ -40,7 +40,7 @@ namespace ParallelMatrixMultiplication.Test
                 {36, 71, 29},
                 {30, 22, 23},
                 {49, 87, 28}
-            } ;
+            };
             int[,] matrix1 =
             {
                 {6, 1, 3, 4},
