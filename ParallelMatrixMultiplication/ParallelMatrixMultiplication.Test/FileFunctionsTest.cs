@@ -12,21 +12,21 @@ namespace ParallelMatrixMultiplication.Test
                 {2, 1, 2},
                 {4, 1, 5},
                 {1, 5, 3}
-            } ;
-            var resultFromFile = FileFunctions.CreateMatrix("../../../MatrixTest1.txt");
+            };
+            var resultFromFile = FunctionsForFile.CreateMatrix("../../../MatrixTest1.txt");
             Assert.AreEqual(result, resultFromFile);
         }
-        
+
         [Test]
         public void TestAbnormalFilePath()
         {
-            Assert.Throws<FilePathException>(() => FileFunctions.CreateMatrix(null));
+            Assert.Throws<WrongFilePathException>(() => FunctionsForFile.CreateMatrix(null));
         }
-        
+
         [Test]
         public void TestEmptyFile()
         {
-            Assert.Throws<EmptyFileException>(() => FileFunctions.CreateMatrix("../../../EmptyFileTest.txt"));
+            Assert.Throws<EmptyFileException>(() => FunctionsForFile.CreateMatrix("../../../EmptyFileTest.txt"));
         }
     }
 }

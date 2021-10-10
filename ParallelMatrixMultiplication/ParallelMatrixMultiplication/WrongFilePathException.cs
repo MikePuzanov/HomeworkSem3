@@ -4,16 +4,16 @@ using System.Text;
 
 namespace ParallelMatrixMultiplication
 {
-    public class FilePathException : Exception
+    public class WrongFilePathException : Exception
     {
         /// <summary>
         /// then filePath is abnormal
         /// </summary>
-        public FilePathException()
+        public WrongFilePathException()
         {
         }
 
-        public FilePathException(string message)
+        public WrongFilePathException(string message)
             : base(message)
         {
         }

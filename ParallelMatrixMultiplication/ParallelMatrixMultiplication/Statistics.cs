@@ -20,12 +20,15 @@ namespace ParallelMatrixMultiplication
             Console.WriteLine($"Результаты на матрицах размеров {row}*{column}.");
             Console.WriteLine($"Количество повторов: {count}.");
             Console.WriteLine("Паралельное умножение:");
-            Console.WriteLine($"Матожидание = {result[0].average}\nСреднеквадратичное отклонение = {result[0].standardDeviation}");
+            Console.WriteLine(
+                $"Матожидание = {result[0].average}\nСреднеквадратичное отклонение = {result[0].standardDeviation}");
             Console.WriteLine("Обычное умножение:");
-            Console.WriteLine($"Матожидание = {result[1].average}\nСреднеквадратичное отклонение = {result[1].standardDeviation}");
+            Console.WriteLine(
+                $"Матожидание = {result[1].average}\nСреднеквадратичное отклонение = {result[1].standardDeviation}");
         }
-        
-        private static (double average, double standardDeviation)[] GetStatistics(List<long> timeParallel, List<long> timeNotParallel)
+
+        private static (double average, double standardDeviation)[] GetStatistics(List<long> timeParallel,
+            List<long> timeNotParallel)
         {
             var averageParallel = timeParallel.Average();
             var averageNotParallel = timeNotParallel.Average();
@@ -35,10 +38,10 @@ namespace ParallelMatrixMultiplication
             var standardDeviationNotParallel = Math.Sqrt(dispersionNotParallel);
             var results = new (double, double)[2];
             results[0] = (averageParallel, standardDeviationParallel);
-            results[1] = (averageNotParallel, standardDeviationNotParallel); 
+            results[1] = (averageNotParallel, standardDeviationNotParallel);
             return results;
-    }
-        
+        }
+
         private static (List<long>, List<long>) GetTimeMatrixMultiplication(int count, int countRows, int countColumns)
         {
             var timeParallel = new List<long>();
@@ -60,7 +63,7 @@ namespace ParallelMatrixMultiplication
 
             return (timeParallel, timeNotParallel);
         }
-        
+
         private static int[,] GenerateMatrix(int countRow, int countColumns)
         {
             var matrix = new int[countRow, countColumns];

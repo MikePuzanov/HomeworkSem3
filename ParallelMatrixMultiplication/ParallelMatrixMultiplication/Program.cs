@@ -19,7 +19,7 @@ namespace ParallelMatrixMultiplication
             Матожидание = 37,86 ms
             Среднеквадратичное отклонение = 9,04 ms
             */
-            
+
             Statistics.CollectStatisticsFromMatrix(256, 256, 100);
             /*
             Результаты на матрицах размеров 256*256.
@@ -31,7 +31,7 @@ namespace ParallelMatrixMultiplication
             Матожидание = 169,91 ms
             Среднеквадратичное отклонение = 20,95 ms
             */
-            
+
             Statistics.CollectStatisticsFromMatrix(512, 512, 100);
             /*
             Результаты на матрицах размеров 512*512.
@@ -43,11 +43,11 @@ namespace ParallelMatrixMultiplication
             Матожидание = 2049,14 ms
             Среднеквадратичное отклонение = 361,01 ms
             */
-            
-            var matrixFirst = FileFunctions.CreateMatrix((args[0]));
-            var matrixSecond = FileFunctions.CreateMatrix(((args[1])));
+
+            var matrixFirst = FunctionsForFile.CreateMatrix(args[0]);
+            var matrixSecond = FunctionsForFile.CreateMatrix(args[1]);
             var matrix = MatrixFunctions.MatrixMultiplicationParallel(matrixFirst, matrixSecond);
-            FileFunctions.CreateFileWithMatrix(args[2], matrix);
+            FunctionsForFile.CreateFileWithMatrix(args[2], matrix);
         }
     }
 }

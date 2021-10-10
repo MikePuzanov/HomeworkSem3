@@ -31,7 +31,7 @@ namespace ParallelMatrixMultiplication.Test
             var matrix = multiplication(matrix1, matrix2);
             Assert.AreEqual(result, matrix);
         }
-        
+
         [TestCaseSource(nameof(FunctionsForTest))]
         public void TestNormalNotSquareData(Func<int[,], int[,], int[,]> multiplication)
         {
@@ -57,15 +57,15 @@ namespace ParallelMatrixMultiplication.Test
             var matrix = multiplication(matrix1, matrix2);
             Assert.AreEqual(result, matrix);
         }
-        
+
         [TestCaseSource(nameof(FunctionsForTest))]
         public void TestAbnormalData(Func<int[,], int[,], int[,]> multiplication)
         {
-            var matrix1 = new int[3,4];
-            var matrix2 = new int[3,3];
+            var matrix1 = new int[3, 4];
+            var matrix2 = new int[3, 3];
             Assert.Throws<MultiplicationException>(() => multiplication(matrix1, matrix2));
         }
-        
+
         private static IEnumerable<Func<int[,], int[,], int[,]>> FunctionsForTest()
         {
             yield return MatrixFunctions.MatrixMultiplicationParallel;
