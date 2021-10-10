@@ -19,7 +19,7 @@ namespace Lazyy
                 number2 *= number2;
                 return number2;
             });
-            
+
             var threads = new Thread[5];
             for (int i = 0; i < threads.Length; i++)
             {
@@ -33,10 +33,12 @@ namespace Lazyy
                 Console.WriteLine(single.Get());
                 Console.WriteLine("!!!");
             }
+
             foreach (var thread in threads)
             {
                 thread.Start();
             }
+
             foreach (var thread in threads)
             {
                 thread.Join();

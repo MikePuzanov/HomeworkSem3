@@ -15,7 +15,7 @@ namespace Lazyy.Test
                 number *= number;
                 return number;
             });
-            
+
             var threads = new Thread[10];
             for (int i = 0; i < threads.Length; i++)
             {
@@ -26,17 +26,17 @@ namespace Lazyy.Test
             {
                 thread.Start();
             }
+
             foreach (var thread in threads)
             {
                 thread.Join();
             }
+
             Assert.AreEqual(4, lazyMulti.Get());
         }
 
         [Test]
         public void NullExceptionTest()
-        {
-            Assert.Throws<NullReferenceException>(() => LazyFactory.CreateMultiLazy<int>(null));
-        }
+            => Assert.Throws<ArgumentNullException>(() => LazyFactory.CreateMultiLazy<int>(null));
     }
 }

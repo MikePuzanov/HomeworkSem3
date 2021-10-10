@@ -22,8 +22,6 @@ namespace Lazyy.Test
 
         [Test]
         public void NullExceptionTest()
-        {
-            Assert.Throws<NullReferenceException>(() => LazyFactory.CreateSingleLazy<int>(null));
-        }
+            => Assert.Throws<ArgumentNullException>(() => LazyFactory.CreateSingleLazy<int>(null));
     }
 }

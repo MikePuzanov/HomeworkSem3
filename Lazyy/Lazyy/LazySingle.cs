@@ -10,13 +10,13 @@ namespace Lazyy
         private T _value;
         private Func<T> _supplier;
         private bool _isGenerate = false;
-        
+
         /// <summary>
         /// создает обьект в однопоточном режиме
         /// </summary>
-        public LazySingle(Func<T> supplierNew)
-            => _supplier = supplierNew ?? throw new NullReferenceException();
-        
+        public LazySingle(Func<T> supplier)
+            => _supplier = supplier ?? throw new ArgumentNullException();
+
         /// <summary>
         /// вызывает вычисление один раз и возвращает один и тот же обьект, полученный при вычислении
         /// </summary>
