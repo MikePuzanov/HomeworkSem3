@@ -3,27 +3,23 @@
 namespace ThreadPool
 {
     /// <summary>
-    /// 
+    /// task interface
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    public interface IMyTask<TResult>
+    public interface IMyTask<out TResult>
     {
         /// <summary>
-        /// 
+        /// shows whether the task is completed or not
         /// </summary>
         public bool IsCompleted { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        public TResult Result { get; set; }
 
         /// <summary>
-        /// 
+        /// returns the result of the task
         /// </summary>
-        /// <param name="func"></param>
-        /// <typeparam name="TNewResult"></typeparam>
-        /// <returns></returns>
-        public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> func);
+        public TResult Result { get; }
+
+        /*/// <summary>
+        ///  
+        /// </summary>
+        public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> func)*/
     }
 }
