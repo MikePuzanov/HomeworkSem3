@@ -15,7 +15,8 @@ namespace ParallelMatrixMultiplication
         {
             if (matrix1.GetLength(1) != matrix2.GetLength(0))
             {
-                throw new MultiplicationException("Number of columns in the first matrix are not equal to the rows in the second matrix!");
+                throw new MultiplicationException(
+                    "Number of columns in the first matrix are not equal to the rows in the second matrix!");
             }
 
             var matrix = new int[matrix1.GetLength(0), matrix2.GetLength(1)];
@@ -62,7 +63,8 @@ namespace ParallelMatrixMultiplication
         {
             if (matrix1.GetLength(1) != matrix2.GetLength(0))
             {
-                throw new MultiplicationException("Number of columns in the first matrix are not equal to the rows in the second matrix!");
+                throw new MultiplicationException(
+                    "Number of columns in the first matrix are not equal to the rows in the second matrix!");
             }
 
             var matrix = new int[matrix1.GetLength(0), matrix2.GetLength(1)];

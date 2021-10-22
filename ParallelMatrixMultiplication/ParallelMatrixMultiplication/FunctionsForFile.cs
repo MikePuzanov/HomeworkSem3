@@ -12,7 +12,7 @@ namespace ParallelMatrixMultiplication
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                throw new WrongFilePathException("Error file path!");
+                throw new WrongFilePathException("File path is incorrect!");
             }
         }
 
@@ -68,7 +68,7 @@ namespace ParallelMatrixMultiplication
         /// </summary>
         public static void CreateFileWithMatrix(string filePath, int[,] matrix)
         {
-            CheckFilePath((filePath));
+            CheckFilePath(filePath);
             var fileOut = new FileInfo(filePath);
             if (fileOut.Exists)
             {
