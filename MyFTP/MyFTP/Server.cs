@@ -66,7 +66,7 @@ namespace MyFTP
                     throw new ArgumentException();
             }
         }
-        
+
         private async Task List(StreamWriter writer, string path)
         {
             if (!Directory.Exists(path))
@@ -89,10 +89,11 @@ namespace MyFTP
             {
                 result += $" {dir} true";
             }
+
             await writer.WriteLineAsync(size.ToString() + result);
             await writer.FlushAsync();
         }
-        
+
         private async Task Get(StreamWriter writer, string path, NetworkStream stream)
         {
             if (!File.Exists(path))

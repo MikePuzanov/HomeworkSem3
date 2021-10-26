@@ -24,7 +24,7 @@ namespace MyFTP
         /// запрос на листинг файлов в папке по пути
         /// </summary>
         public async Task<(string name, bool isDir)[]> List(string path)
-        { 
+        {
             var client = new TcpClient(_host, _port);
             using var stream = client.GetStream();
             var writer = new StreamWriter(stream);
