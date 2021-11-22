@@ -3,13 +3,13 @@
 namespace Lazyy
 {
     /// <summary>
-    /// реализация однопоточного режима
+    /// реализация ILazy в однопоточном режиме
     /// </summary>
     public class LazySingle<T> : ILazy<T>
     {
         private T _value;
         private Func<T> _supplier;
-        private bool _isGenerate = false;
+        private bool _isGenerated = false;
 
         /// <summary>
         /// создает обьект в однопоточном режиме
@@ -22,12 +22,12 @@ namespace Lazyy
         /// </summary>
         public T Get()
         {
-            if (_isGenerate)
+            if (_isGenerated)
             {
                 return _value;
             }
 
-            _isGenerate = true;
+            _isGenerated = true;
             _value = _supplier();
             _supplier = null;
             return _value;
