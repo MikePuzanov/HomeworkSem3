@@ -15,7 +15,7 @@ namespace Test1._1
             else
             {
                 var client = new Client(args[0], Int32.Parse(args[1]));
-                client.Working();
+                 await client.Working();
             }
         }
     }

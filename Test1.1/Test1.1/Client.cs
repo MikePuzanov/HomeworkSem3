@@ -17,11 +17,11 @@ namespace Test1._1
             _client = new TcpClient(host, port);
         }
 
-        public void Working()
+        public async Task Working()
         {
             while (true)
             {
-                Task.Run(async () =>
+                await Task.Run(async () =>
                 {
                     while (true) {
                         await Writer(_client.GetStream());
