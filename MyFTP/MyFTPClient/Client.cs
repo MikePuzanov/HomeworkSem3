@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace MyFTP
+namespace MyFTPClient
 {
     /// <summary>
     /// класс клиента для общения с сервером
@@ -23,29 +24,33 @@ namespace MyFTP
         /// <summary>
         /// запрос на листинг файлов в папке по пути
         /// </summary>
-        public async Task<(string name, bool isDir)[]> List(string path)
+        public async Task<(string name, bool isDir)[]> List(string path, CancellationTokenSource tokenSource)
         {
-            var client = new TcpClient(_host, _port);
-            using var stream = client.GetStream();
-            var writer = new StreamWriter(stream);
+            using var client = new TcpClient();
+            await client.ConnectAsync(_host, _port);
+            await using var stream = client.GetStream();
+            await using var writer = new StreamWriter(stream);
+            using var reader = new StreamReader(stream);
             await writer.WriteLineAsync($"1 {path}");
             await writer.FlushAsync();
-            var reader = new StreamReader(stream);
             var info = await reader.ReadLineAsync();
             var infoArray = info.Split(' ');
             var size = Convert.ToInt32(infoArray[0]);
             if (size == -1)
             {
-                return null;
+                throw new ArgumentException();
             }
 
             var data = new (string name, bool isDir)[size];
 
             for (int i = 1; i < infoArray.Length; i += 2)
             {
-                var name = infoArray[i];
+                if (tokenSource.IsCancellationRequested)
+                {
+                    return null;
+                }
                 var isDir = Convert.ToBoolean(infoArray[i + 1]);
-                data[(i - 1) / 2] = (name, isDir);
+                data[(i - 1) / 2] = (infoArray[i], isDir);
             }
 
             return data;
@@ -54,24 +59,27 @@ namespace MyFTP
         /// <summary>
         /// запрос на скачивание нужного файла
         /// </summary>
-        public async Task<(long size, byte[] content)> Get(string path, Stream fileStream)
+        public async Task<long> Get(string path, Stream fileStream, CancellationTokenSource tokenSource)
         {
-            var client = new TcpClient(_host, _port);
-            using var stream = client.GetStream();
-            var writer = new StreamWriter(stream);
+            using var client = new TcpClient(_host, _port);
+            await using var stream = client.GetStream();
+            await using var writer = new StreamWriter(stream);
+            using var reader = new StreamReader(stream);
             await writer.WriteLineAsync($"2 {path}");
             await writer.FlushAsync();
-            var reader = new StreamReader(stream);
             var size = Convert.ToInt32(await reader.ReadLineAsync());
+            if (tokenSource.IsCancellationRequested)
+            {
+                throw new ArgumentException();
+            }
             if (size == -1)
             {
-                throw new FileNotFoundException();
+                throw new ArgumentException();
             }
 
-            var content = new byte[size];
-            await reader.BaseStream.ReadAsync(content, 0, size);
-            fileStream.Position = 0;
-            return (size, content);
+            await stream.CopyToAsync(fileStream);
+            
+            return size;
         }
     }
 }

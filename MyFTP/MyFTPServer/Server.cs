@@ -1,25 +1,21 @@
-﻿using System;
-using System.Data;
-using System.IO;
+﻿using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MyFTP
+namespace MyFTPServer
 {
     /// <summary>
     /// класс сервера для приема запросов от клиента
     /// </summary>
     public class Server
     {
-        private int _port;
         private readonly TcpListener _listener;
-        private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cancellationToken = new ();
 
-        public Server(int port, string host)
+        public Server(string host, int port)
         {
-            _port = port;
             _listener = new TcpListener(IPAddress.Parse(host), port);
         }
 
@@ -49,21 +45,22 @@ namespace MyFTP
         /// </summary>
         private async void Working(TcpClient client)
         {
-            var stream = client.GetStream();
-            var reader = new StreamReader(stream);
-            var writer = new StreamWriter(stream);
+            using var stream = client.GetStream();
+            using var reader = new StreamReader(stream);
+            using var writer = new StreamWriter(stream);
             var request = await reader.ReadLineAsync();
             var (command, path) = (request?.Split()[0], request?.Split()[1]);
             switch (command)
             {
                 case "1":
                     await List(writer, path);
-                    break;
+                break;
                 case "2":
                     await Get(writer, path, stream);
-                    break;
+                break;
                 default:
-                    throw new ArgumentException();
+                    await writer.WriteAsync("Ваш протокол сломан!");
+                break;
             }
         }
 
@@ -72,9 +69,9 @@ namespace MyFTP
             if (!Directory.Exists(path))
             {
                 await writer.WriteLineAsync("-1");
-                await writer.FlushAsync();
+                return;
             }
-
+            
             var files = Directory.GetFiles(path);
             var directories = Directory.GetDirectories(path);
             var size = files.Length + directories.Length;
@@ -99,7 +96,7 @@ namespace MyFTP
             if (!File.Exists(path))
             {
                 await writer.WriteLineAsync("-1");
-                await writer.FlushAsync();
+                return;
             }
 
             var file = new FileStream(path, FileMode.Open);
