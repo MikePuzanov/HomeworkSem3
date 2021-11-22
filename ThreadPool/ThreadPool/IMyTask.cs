@@ -3,7 +3,7 @@
 namespace ThreadPool
 {
     /// <summary>
-    /// task interface
+    /// interface for object from MyThreadPool
     /// </summary>
     public interface IMyTask<out TResult>
     {
@@ -17,9 +17,9 @@ namespace ThreadPool
         /// </summary>
         public TResult Result { get; }
 
-        /*/// <summary>
-        ///  
+        /// <summary>
+        ///  continues calculating
         /// </summary>
-        public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> func)*/
+        public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> func);
     }
 }

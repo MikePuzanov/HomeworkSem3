@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using NUnit.Framework;
 using ThreadPool;
@@ -7,68 +8,55 @@ namespace ThreadPoolTest
 {
     public class Tests
     {
-        private ThreadPool.MyThreadPool _threadPool;
-        private readonly int _numberOfThreads = Environment.ProcessorCount;
+        private MyThreadPool _threadPool;
+        private readonly int _numberOfThreads = 4;
 
         [SetUp]
         public void Setup()
-        {
-            _threadPool = new(Environment.ProcessorCount);
-        }
+            => _threadPool = new(Environment.ProcessorCount);
+            
+
+        [TearDown]
+        public void TearDown()
+            => _threadPool.Shutdown();
+        
+        [TearDown]
+        public void Teardown()
+            => _threadPool.Shutdown();
 
         [Test]
-        public void CountingThreadsTest1()
+        public void NullFunctionShouldThrowException()
+            => Assert.Throws<ArgumentNullException>(() => _threadPool.AddTask<object>(null));
+        
+        [Test]
+        public void ResultShouldThrowException()
         {
-            int number = 0;
-            for (int i = 0; i < 20; i++)
-            {
-                _threadPool.AddTask(() =>
-                {
-                    Interlocked.Increment(ref number);
-                    Thread.Sleep(3000);
-                    return "qwe";
-                });
-            }
-
-            Thread.Sleep(300);
-            Assert.AreEqual(_numberOfThreads, number);
+            var task = _threadPool.AddTask<object>(() => throw new ArgumentOutOfRangeException());
+            Assert.Throws<AggregateException>(() => Result(task));
         }
-
+       
+        private object Result<TResult>(IMyTask<TResult> task)
+            => task.Result;
 
         [Test]
-        public void CountingThreadsTest2()
-        {
-            int number = 0;
-            _threadPool.AddTask(() =>
-            {
-                Interlocked.Increment(ref number);
-                Thread.Sleep(3000);
-                return "qwe";
-            });
-
-            Thread.Sleep(300);
-            Assert.AreEqual(1, number);
-        }
+        public void ExceptionInThreadPoolConstructorTest()
+            => Assert.Throws<ArgumentOutOfRangeException>(() => new MyThreadPool(0));
 
         [Test]
-        public void ShutdownTest()
+        public void ExceptionAfterShutdownTest()
         {
-            int number = 0;
-            for (int i = 0; i < 20; i++)
-            {
-                _threadPool.AddTask(() =>
-                {
-                    Interlocked.Increment(ref number);
-                    Thread.Sleep(1000);
-                    return "qwe";
-                });
-            }
-
-            Thread.Sleep(100);
             _threadPool.Shutdown();
+            Assert.Throws<InvalidOperationException>(() => _threadPool.AddTask(() => 5));
+        }
 
-            Thread.Sleep(500);
-            Assert.AreEqual(_numberOfThreads, number);
+        [Test]
+        public void GetTaskAfterShutdown()
+        {
+            var task1 = _threadPool.AddTask(() => 3 * _numberOfThreads);
+            var task2 = _threadPool.AddTask(() => _numberOfThreads * _numberOfThreads);
+            _threadPool.Shutdown();
+            Assert.AreEqual(12, task1.Result);
+            Assert.AreEqual(16, task2.Result);
         }
 
         [Test]
@@ -93,16 +81,14 @@ namespace ThreadPoolTest
         }
 
         [Test]
-        public void ExceptionInThreadPoolConstructorTest()
+        public void ContinueWithTest()
         {
-            Assert.Throws<ArgumentException>(() => new MyThreadPool(0));
-        }
-
-        [Test]
-        public void ExceptionAfterShutdownTest()
-        {
-            _threadPool.Shutdown();
-            Assert.Throws<InvalidOperationException>(() => _threadPool.AddTask(() => 5));
+            var task1 = _threadPool.AddTask(() => 3 * _numberOfThreads);  //12
+            var task2 = task1.ContinueWith(x => x + _numberOfThreads);        //12 + 4
+            var task3 = task1.ContinueWith(x => x + task2.Result);            // 12 + 16
+            Assert.AreEqual(12, task1.Result);
+            Assert.AreEqual(16, task2.Result);
+            Assert.AreEqual(28, task3.Result);
         }
     }
 }
