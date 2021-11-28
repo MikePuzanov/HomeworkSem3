@@ -29,7 +29,7 @@ namespace Lazyy
                 return _value;
             }
 
-            lock (this._lockObject)
+            lock (_lockObject)
             {
                 if (Volatile.Read(ref _isGenerated))
                 {
