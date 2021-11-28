@@ -13,10 +13,6 @@ namespace ThreadPoolTest
         public void Setup()
             => _threadPool = new(Environment.ProcessorCount);
 
-        /*[TearDown]
-        public void TearDown()
-            => _threadPool.Shutdown();*/
-
         [Test]
         public void NullFunctionShouldThrowException()
         {
