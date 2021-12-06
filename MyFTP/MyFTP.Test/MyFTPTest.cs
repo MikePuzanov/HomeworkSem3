@@ -17,7 +17,7 @@ public class Tests
         _server = new Server("127.0.0.1", 80);
         _client = new Client("127.0.0.1", 80);
         _fileStream = new MemoryStream();
-        _=_server.StartServer();
+        _server.StartServer();
     }
 
     [TearDown]
