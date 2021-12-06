@@ -61,22 +61,17 @@ namespace ThreadPool
         /// </summary>
         public IMyTask<TResult> AddTask<TResult>(Func<TResult> function)
         {
-            lock (_lockObject)
+            if (_token.IsCancellationRequested)
             {
-                if (_token.IsCancellationRequested)
-                {
-                    throw new InvalidOperationException();
-                }
+                throw new InvalidOperationException();
             }
-
-            var task = new MyTask<TResult>(function, this);
             lock (_lockObject)
             {
+                var task = new MyTask<TResult>(function, this);
                 _tasksQueue.Enqueue(task.Count);
                 _waiterNewTask.Set();
+                return task;
             }
-
-            return task;
         }
 
         /// <summary>
@@ -167,10 +162,10 @@ namespace ThreadPool
                     while (_continueWithTasksQueue.Count > 0)
                     {
                         var action = _continueWithTasksQueue.Dequeue();
-                        lock (_locker)
+                        lock (_myThreadPool._lockObject)
                         {
                             _myThreadPool._tasksQueue.Enqueue(action);
-                            _waiterManual.Set();
+                            _myThreadPool._waiterNewTask.Set();
                         }
                     }
                 }
@@ -195,11 +190,8 @@ namespace ThreadPool
                         while (_continueWithTasksQueue.Count > 0)
                         {
                             var action = _continueWithTasksQueue.Dequeue();
-                            lock (_locker)
-                            {
-                                _myThreadPool._tasksQueue.Enqueue(action);
-                                _waiterManual.Set();
-                            }
+                            _myThreadPool._tasksQueue.Enqueue(action);
+                            _waiterManual.Set();
                         }
                     }
 
