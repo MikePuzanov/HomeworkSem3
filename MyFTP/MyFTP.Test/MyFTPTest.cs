@@ -9,7 +9,7 @@ public class Tests
     private Server _server;
     private Client _client;
     private Stream _fileStream;
-    private readonly CancellationToken _cancellationToken = new ();
+    private CancellationToken _cancellationToken;
 
     [SetUp]
     public void Setup()
@@ -17,7 +17,8 @@ public class Tests
         _server = new Server("127.0.0.1", 80);
         _client = new Client("127.0.0.1", 80);
         _fileStream = new MemoryStream();
-        _server.StartServer();
+        _cancellationToken = new ();
+        _server.StartServer();fi
     }
 
     [TearDown]
