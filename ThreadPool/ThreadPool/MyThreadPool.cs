@@ -176,27 +176,30 @@ namespace ThreadPool
             /// </summary>
             public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> func)
             {
-                lock (_locker)
+                lock (_myThreadPool._lockObject)
                 {
                     if (_myThreadPool._token.IsCancellationRequested)
                     {
                         throw new InvalidOperationException();
                     }
-
-                    var task = new MyTask<TNewResult>(() => func(Result), _myThreadPool);
-                    _continueWithTasksQueue.Enqueue(task.Count);
-                    if (IsCompleted)
+                }
+                
+                var task = new MyTask<TNewResult>(() => func(Result), _myThreadPool);
+                _continueWithTasksQueue.Enqueue(task.Count);
+                if (IsCompleted)
+                {
+                    while (_continueWithTasksQueue.Count > 0)
                     {
-                        while (_continueWithTasksQueue.Count > 0)
+                        lock (_myThreadPool._lockObject)
                         {
                             var action = _continueWithTasksQueue.Dequeue();
                             _myThreadPool._tasksQueue.Enqueue(action);
-                            _waiterManual.Set();
+                            _myThreadPool._waiterNewTask.Set();
                         }
-                    }
 
-                    return task;
+                    }
                 }
+                return task;
             }
         }
     }
