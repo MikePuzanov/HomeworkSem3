@@ -18,7 +18,7 @@ public class Tests
         _client = new Client("127.0.0.1", 80);
         _fileStream = new MemoryStream();
         _cancellationToken = new ();
-        _server.StartServer();fi
+        _server.StartServer();
     }
 
     [TearDown]
