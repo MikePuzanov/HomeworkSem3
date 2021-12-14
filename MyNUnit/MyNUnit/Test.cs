@@ -8,9 +8,10 @@ namespace MyNUnit
         
         public string Ignore { get; set; }
 
-        public Test()
+        public Test(Type expected, string ignore = null)
         {
-            
+            Expected = expected;
+            Ignore = ignore;
         }
     }
 }
