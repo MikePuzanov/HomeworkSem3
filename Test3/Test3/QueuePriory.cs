@@ -4,6 +4,9 @@ using System.Threading;
 
 namespace Test3
 {
+    /// <summary>
+    /// потокобезопасная очередь с приоритетами
+    /// </summary>
     public class QueuePriory
     {
         private List<(int value, int priority)> _queue;
@@ -17,6 +20,9 @@ namespace Test3
             _queue = new List<(int, int)>();
         }
 
+        /// <summary>
+        /// добавление в очередь
+        /// </summary>
         public void Enqueue(int value, int priority)
         {
             var index = 1;
@@ -51,6 +57,9 @@ namespace Test3
             }
         }
 
+        /// <summary>
+        /// удаление из очереди
+        /// </summary>
         public int Dequeue()
         {
             var value = 0;
@@ -70,6 +79,9 @@ namespace Test3
             }
         }
 
+        /// <summary>
+        /// возвращает размер
+        /// </summary>
         public int Size()
             => _size;
     }
