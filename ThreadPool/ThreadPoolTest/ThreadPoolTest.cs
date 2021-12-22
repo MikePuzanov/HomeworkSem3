@@ -30,6 +30,65 @@ namespace ThreadPoolTest
             Assert.Throws<AggregateException>(() => Result(task));
         }
 
+        [Test]
+        public void ParallelAddTaskTest()
+        {
+            var tasks = new IMyTask<int>[30];
+            var functions = new Func<int>[30];
+            for (int i = 0; i < 30; i++)
+            {
+                var index = i;
+                functions[i] = () =>
+                {
+                    var result = 0;
+                    for (int j = 0; j < 100; j++)
+                    {
+                        result++;
+                    }
+                    return result + index;
+                };
+            }
+
+            for (int i = 0; i < 30; i++)
+            {
+                tasks[i] = _threadPool.AddTask(functions[i]);
+            }
+            for (int i = 0; i < 30; i++)
+            {
+                Assert.AreEqual(100 + i, tasks[i].Result);
+            }
+        }
+
+        [Test]
+        public void ShutdownWhileTaskCountTest()
+        {
+            var tasks = new IMyTask<int>[30];
+            var functions = new Func<int>[30];
+            for (int i = 0; i < 30; i++)
+            {
+                var i1 = i;
+                functions[i] = () =>
+                {
+                    var result = 0;
+                    for (int j = 0; j < 10; j++)
+                    {
+                        result += 10;
+                    }
+                    return result + i1;
+                };
+            }
+
+            for (int i = 0; i < 30; i++)
+            {
+                tasks[i] = _threadPool.AddTask(functions[i]);
+            }
+            _threadPool.Shutdown();
+            for (int i = 0; i < 30; i++)
+            {
+                Assert.AreEqual(100 + i, tasks[i].Result);
+            }
+        }
+        
         private object Result<TResult>(IMyTask<TResult> task)
             => task.Result;
 

@@ -61,17 +61,31 @@ namespace ThreadPool
         /// </summary>
         public IMyTask<TResult> AddTask<TResult>(Func<TResult> function)
         {
+            ReadyToAddNewTask();
+            lock (_lockObject)
+            {
+                if (_token.IsCancellationRequested)
+                {
+                    throw new InvalidOperationException();
+                }
+                var task = new MyTask<TResult>(function, this);
+                AddInTaskQueue(task.Count);
+                return task;
+            }
+        }
+
+        private void ReadyToAddNewTask()
+        {
             if (_token.IsCancellationRequested)
             {
                 throw new InvalidOperationException();
             }
-            lock (_lockObject)
-            {
-                var task = new MyTask<TResult>(function, this);
-                _tasksQueue.Enqueue(task.Count);
-                _waiterNewTask.Set();
-                return task;
-            }
+        }
+
+        private void AddInTaskQueue(Action task)
+        {
+            _tasksQueue.Enqueue(task);
+            _waiterNewTask.Set();
         }
 
         /// <summary>
@@ -164,8 +178,7 @@ namespace ThreadPool
                         var action = _continueWithTasksQueue.Dequeue();
                         lock (_myThreadPool._lockObject)
                         {
-                            _myThreadPool._tasksQueue.Enqueue(action);
-                            _myThreadPool._waiterNewTask.Set();
+                            _myThreadPool.AddInTaskQueue(action);
                         }
                     }
                 }
@@ -178,28 +191,20 @@ namespace ThreadPool
             {
                 lock (_myThreadPool._lockObject)
                 {
-                    if (_myThreadPool._token.IsCancellationRequested)
+                    _myThreadPool.ReadyToAddNewTask();
+                    var task = new MyTask<TNewResult>(() => func(Result), _myThreadPool);
+                    _continueWithTasksQueue.Enqueue(task.Count);
+                    if (IsCompleted)
                     {
-                        throw new InvalidOperationException();
-                    }
-                }
-                
-                var task = new MyTask<TNewResult>(() => func(Result), _myThreadPool);
-                _continueWithTasksQueue.Enqueue(task.Count);
-                if (IsCompleted)
-                {
-                    while (_continueWithTasksQueue.Count > 0)
-                    {
-                        lock (_myThreadPool._lockObject)
+                        while (_continueWithTasksQueue.Count > 0)
                         {
                             var action = _continueWithTasksQueue.Dequeue();
                             _myThreadPool._tasksQueue.Enqueue(action);
                             _myThreadPool._waiterNewTask.Set();
                         }
-
                     }
+                    return task;
                 }
-                return task;
             }
         }
     }
