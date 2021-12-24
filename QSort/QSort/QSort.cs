@@ -56,6 +56,10 @@ namespace QSort
         
         private void SortCallMulti(int start, int end)
         {
+            if (start >= end)
+            {
+                return;
+            }
             int partition = Partition(start, end);
             var task = new Task[2];
             task[0] = Task.Run(() => SortCallMulti(start, partition - 1));
