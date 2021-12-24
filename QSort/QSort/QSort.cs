@@ -7,7 +7,7 @@ namespace QSort
     public  class QSort<T> where T:IComparable
     {
         private IList<T> List;
-        
+
         public QSort(IList<T> list)
         {
             this.List = list;
@@ -60,8 +60,6 @@ namespace QSort
             var task = new Task[2];
             task[0] = Task.Run(() => SortCallMulti(start, partition - 1));
             task[1] = Task.Run(() => SortCallMulti(partition + 1, end));
-            task[0].Wait();
-            task[1].Wait();
         }
         
         public void SortMulti()
