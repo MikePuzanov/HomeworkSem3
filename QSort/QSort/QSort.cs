@@ -6,14 +6,14 @@ namespace QSort
 {
     public  class QSort<T> where T:IComparable
     {
-        public IList<T> List;
+        private IList<T> List;
         
         public QSort(IList<T> list)
         {
             this.List = list;
         }
         
-        public int Partition(int left, int right)
+        private int Partition(int left, int right)
         {
             int start = right;
             int end = left;
@@ -38,7 +38,7 @@ namespace QSort
             (List[posOne], List[posTwo]) = (List[posTwo], List[posOne]);
         }
 
-        public void SortCall(int start, int end)
+        private void SortCall(int start, int end)
         {
             if (start >= end)
             {
@@ -54,7 +54,7 @@ namespace QSort
             SortCall(0, List.Count - 1);
         }
         
-        public void SortCallMulti(int start, int end)
+        private void SortCallMulti(int start, int end)
         {
             if (start >= end)
             {
@@ -64,7 +64,6 @@ namespace QSort
             var task = new Task[2];
             task[0] = Task.Run(() => SortCallMulti(start, partition - 1));
             task[1] = Task.Run(() => SortCallMulti(partition + 1, end));
-            
         }
         
         public void SortMulti()
