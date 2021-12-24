@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSort", "QSort\QSort.csproj", "{94307952-BF53-4474-BC48-C9BB49E563F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QSortTest", "QSortTest\QSortTest.csproj", "{1C4FF2C2-4A26-46EE-A1FB-9BC55EA704BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{94307952-BF53-4474-BC48-C9BB49E563F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94307952-BF53-4474-BC48-C9BB49E563F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94307952-BF53-4474-BC48-C9BB49E563F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94307952-BF53-4474-BC48-C9BB49E563F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C4FF2C2-4A26-46EE-A1FB-9BC55EA704BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C4FF2C2-4A26-46EE-A1FB-9BC55EA704BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C4FF2C2-4A26-46EE-A1FB-9BC55EA704BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C4FF2C2-4A26-46EE-A1FB-9BC55EA704BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
