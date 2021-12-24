@@ -61,6 +61,7 @@ namespace QSort
             task[0] = Task.Run(() => SortCallMulti(start, partition - 1));
             task[0].Wait();
             task[1] = Task.Run(() => SortCallMulti(partition + 1, end));
+            task[1].Wait();
         }
         
         public void SortMulti()
