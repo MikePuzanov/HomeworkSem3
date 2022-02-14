@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace ThreadPool
 {
+    /// <summary>
+    /// pool of threads that can be used to execute tasks
+    /// </summary>
     public class MyThreadPool
     {
         private readonly Thread[] _threads;
