@@ -32,7 +32,7 @@ public class Client
         var size = Convert.ToInt32(infoArray[0]);
         if (size == -1)
         {
-            throw new ArgumentException();
+            throw new Exception();
         }
 
         var data = new (string name, bool isDir)[size];

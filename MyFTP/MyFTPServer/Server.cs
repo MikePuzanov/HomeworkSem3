@@ -11,7 +11,7 @@ using System.Text;
 public class Server
 {
     private readonly TcpListener _listener;
-    private readonly CancellationTokenSource _cancellationToken = new ();
+    private readonly CancellationTokenSource _tokenSource = new ();
 
     public Server(string host, int port)
     {
@@ -25,7 +25,7 @@ public class Server
     {
         var task = new List<Task>();
         _listener.Start();
-        while (!_cancellationToken.IsCancellationRequested)
+        while (!_tokenSource.IsCancellationRequested)
         {
             var client = await _listener.AcceptTcpClientAsync();
             task.Add(Working(client));
@@ -38,7 +38,7 @@ public class Server
     /// остановка приема запросов
     /// </summary>
     public void StopServer()
-        => _cancellationToken.Cancel();
+        => _tokenSource.Cancel();
 
     /// <summary>
     /// метод для распределения запросов
