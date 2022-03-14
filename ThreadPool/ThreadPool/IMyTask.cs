@@ -1,4 +1,6 @@
-﻿using System;
+﻿namespace ThreadPool;
+
+using System;
 
 /// <summary>
 /// interface for object from MyThreadPool
@@ -20,3 +22,4 @@ public interface IMyTask<out TResult>
     /// </summary>
     public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> func);
 }
+

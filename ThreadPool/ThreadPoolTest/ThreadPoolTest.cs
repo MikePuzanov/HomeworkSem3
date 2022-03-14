@@ -1,5 +1,7 @@
 using System;
+using System.Threading;
 using NUnit.Framework;
+using ThreadPool;
 
 namespace ThreadPoolTest
 {
@@ -133,6 +135,55 @@ namespace ThreadPoolTest
             Assert.AreEqual(12, task1.Result);
             Assert.AreEqual(16, task2.Result);
             Assert.AreEqual(28, task3.Result);
+        }
+
+        [Test]
+        public void TestWithSeveralThreads()
+        {
+            var answerFunc = 10000;
+            var countOfTasks = 15;
+            var tasks = new IMyTask<int>[countOfTasks];
+            var functions = new Func<int>[countOfTasks];
+            _threadPool = new MyThreadPool(5);
+            var threads = new Thread[10];
+            for (int i = 0; i < 10; i++)
+            {
+                threads[i] = new Thread(() =>
+                {
+                    var threadTasks = new IMyTask<int>[15];
+                    var threadFunctions = new Func<int>[15];
+                    for (int j = 0; j < countOfTasks; j++)
+                    {
+                        var index = j;
+                        threadFunctions[j] = new Func<int>(() =>
+                        {
+                            var result = 0;
+                            for (int z = 0; z < answerFunc; z++)
+                            {
+                                result++;
+                            }
+
+                            return result + index;
+                        });
+                    }
+
+                    for (int j = 0; j < countOfTasks; j++)
+                    {
+                        threadTasks[j] = _threadPool.AddTask(functions[j]);
+                    }
+
+                    for (int j = 0; j < countOfTasks; j++)
+                    {
+                        Assert.AreEqual(answerFunc + j, threadTasks[j].Result);
+                    }
+                });
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                threads[i].Start();
+                threads[i].Join();
+            }
         }
     }
 }
