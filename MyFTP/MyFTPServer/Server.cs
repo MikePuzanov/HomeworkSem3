@@ -1,9 +1,12 @@
-﻿using System.IO;
+﻿namespace MyFTPServer;
+
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 /// <summary>
 /// класс сервера для приема запросов от клиента

@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using MyFTPClient;
+using MyFTPServer;
 using NUnit.Framework;
 
 public class Tests
@@ -18,7 +20,7 @@ public class Tests
         _client = new Client("127.0.0.1", 80);
         _fileStream = new MemoryStream();
         _cancellationToken = new ();
-        _server.StartServer();
+        _= _server.StartServer();
     }
 
     [TearDown]
@@ -34,8 +36,8 @@ public class Tests
     }
 
     [Test]
-    public async Task ListInvalidFileNameTest()
-    { 
+    public void ListInvalidFileNameTest()
+    {
         Assert.ThrowsAsync<AggregateException>(() => Task.Run(() => _client.Get("Text.txt", _fileStream, _cancellationToken).Wait()));
     }
 

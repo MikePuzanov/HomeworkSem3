@@ -1,39 +1,46 @@
-﻿global using System.Threading;
-global using System;
-global using System.IO;
+﻿namespace MyFTPClient;
 
-var client = new Client(args[0], Convert.ToInt32(args[1]));
-var request = Console.ReadLine().Split(' ');
-var token = new CancellationToken();
-while (request[0] != "exit" || !token.IsCancellationRequested)
+using System.Threading;
+using System;
+using System.IO;
+
+public class Program
 {
-    if (request[0] == "1")
+    public async void main(string[] args)
     {
-        try
+        var client = new Client(args[0], Convert.ToInt32(args[1]));
+        var token = new CancellationToken();
+        while (args[0] != "exit" || !token.IsCancellationRequested)
         {
-            var response = await client.List(request[1], token);
-            foreach (var file in response)
+            if (args[0] == "1")
             {
-                Console.WriteLine($"{file.Item1} {file.Item2}");
+                try
+                {
+                    var response = await client.List(args[1], token);
+                    foreach (var file in response)
+                    {
+                        Console.WriteLine($"{file.Item1} {file.Item2}");
+                    }
+                }
+                catch (ArgumentException)
+                {
+                    Console.WriteLine("Ошибка!");
+                }
             }
-        }
-        catch (Exception)
-        {
-            Console.WriteLine("Ошибка!");
-        }
-    }
 
-    if (request[0] == "2")
-    {
-        using (var fstream = new FileStream(request[2], FileMode.OpenOrCreate))
-        {
-            try
+            if (args[0] == "2")
             {
-                var response = client.Get(request[1], fstream, token);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Ошибка!");
+                using (var fstream = new FileStream(args[2], FileMode.OpenOrCreate))
+                {
+                    try
+                    {
+                        var response = client.Get(args[1], fstream, token);
+                    }
+                    catch (ArgumentException)
+                    {
+                        Console.WriteLine("Ошибка!");
+                    }
+                }
             }
         }
     }
