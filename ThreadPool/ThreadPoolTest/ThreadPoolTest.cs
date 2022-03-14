@@ -145,6 +145,25 @@ namespace ThreadPoolTest
             var tasks = new IMyTask<int>[countOfTasks];
             var functions = new Func<int>[countOfTasks];
             _threadPool = new MyThreadPool(5);
+            for (int i = 0; i < countOfTasks; i++)
+            {
+                var index = i;
+                functions[i] = new Func<int>(() =>
+                {
+                    var result = 0;
+                    for (int j = 0; j < answerFunc; j++)
+                    {
+                        result++;
+                    }
+
+                    return result + index;
+                });
+            }
+
+            for (int i = 0; i < countOfTasks; i++)
+            {
+                tasks[i] = _threadPool.AddTask(functions[i]);
+            }
             var threads = new Thread[10];
             for (int i = 0; i < 10; i++)
             {
