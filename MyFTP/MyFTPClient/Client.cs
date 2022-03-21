@@ -37,7 +37,7 @@ public class Client
         var size = Convert.ToInt32(infoArray[0]);
         if (size == -1)
         {
-            throw new ArgumentException();
+            throw new FileNotFoundException();
         }
 
         var data = new (string name, bool isDir)[size];
@@ -57,7 +57,7 @@ public class Client
     /// </summary>
     public async Task<long> Get(string path, Stream fileStream, CancellationToken cancellationToken)
     {
-        using var client = new TcpClient(_host, _port);
+        using var client = new TcpClient();
         await client.ConnectAsync(_host, _port, cancellationToken);
         await using var stream = client.GetStream();
         await using var writer = new StreamWriter(stream);
@@ -67,7 +67,7 @@ public class Client
         var size = Convert.ToInt32(await reader.ReadLineAsync());
         if (size == -1)
         {
-            throw new ArgumentException();
+            throw new FileNotFoundException();
         }
 
         await stream.CopyToAsync(fileStream, cancellationToken);

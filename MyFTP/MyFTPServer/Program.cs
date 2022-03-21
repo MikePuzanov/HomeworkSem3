@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 public class Program
 {
-    public async void main(string[] args)
+    public static async Task Main(string[] args)
     {
         try
         {

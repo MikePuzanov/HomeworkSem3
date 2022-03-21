@@ -21,6 +21,7 @@ public class Tests
         _fileStream = new MemoryStream();
         _cancellationToken = new ();
         _= _server.StartServer();
+        Thread.Sleep(5000);
     }
 
     [TearDown]
@@ -32,13 +33,13 @@ public class Tests
     [Test]
     public void GetInvalidFileNameTest()
     {
-        Assert.ThrowsAsync<AggregateException>(() => Task.Run(() =>  _client.Get("Text.txt", _fileStream, _cancellationToken).Wait()));
+        Assert.ThrowsAsync<FileNotFoundException>(() => _client.Get("Text.txt", _fileStream, _cancellationToken));
     }
 
     [Test]
     public void ListInvalidFileNameTest()
     {
-        Assert.ThrowsAsync<AggregateException>(() => Task.Run(() => _client.Get("Text.txt", _fileStream, _cancellationToken).Wait()));
+        Assert.ThrowsAsync<FileNotFoundException>(() =>  _client.Get("Text.txt", _fileStream, _cancellationToken));
     }
 
     [Test]
@@ -64,5 +65,25 @@ public class Tests
         var result2 = File.ReadAllBytes(destination);
         Assert.AreEqual(result, result2);
         File.Delete(destination);
+    }
+
+    [Test]
+    public void ParallelClientConnection()
+    {
+        var clients = new Task[2];
+        for (var i = 0; i < 2; i++)
+        {
+            clients[i] = Task.Run(() =>
+            {
+                var localClient = new Client("127.0.0.1", 80);
+                var answer = localClient.List("../../../TestData", _cancellationToken).Result;
+                Assert.AreEqual("../../../TestData\\Data.txt", answer[0].name);
+            });
+        }
+
+        foreach (var request in clients)
+        {
+            request.Wait();
+        }
     }
 }

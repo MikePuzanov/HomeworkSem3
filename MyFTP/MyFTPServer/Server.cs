@@ -61,6 +61,9 @@ public class Server
             case "2":
                 await Get(writer, path, stream);
             break;
+            case "!exit":
+                StopServer();
+            break;
             default:
                 await writer.WriteAsync("Ваш протокол сломан!");
             break;
