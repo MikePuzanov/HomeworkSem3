@@ -23,7 +23,7 @@ public class Tests
     [NUnit.Framework.Test]
     public void TestForMessages()
     {
-        var result = myNUnit.RunTests("../../../../ForTests/bin/Debug/net5.0/");
+        var result = myNUnit.RunTests("../../../../ForTests/bin/Debug/net6.0/");
         foreach (var m in result)
         {
             Assert.IsTrue(answer.Contains(m.Item1));
