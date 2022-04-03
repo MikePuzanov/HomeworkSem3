@@ -30,7 +30,7 @@ public class Server
         _listener.Start();
         while (!_tokenSource.IsCancellationRequested)
         {
-            var client = await _listener.AcceptTcpClientAsync();
+            using var client = await _listener.AcceptTcpClientAsync();
             task.Add(Working(client));
         }
         await Task.WhenAll(task);

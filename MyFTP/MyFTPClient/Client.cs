@@ -1,6 +1,7 @@
 ﻿namespace MyFTPClient;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
@@ -40,16 +41,18 @@ public class Client
             throw new FileNotFoundException();
         }
 
-        var data = new (string name, bool isDir)[size];
+        var data = new List<(string, bool)>();
+
+
 
         for (int i = 1; i < infoArray.Length; i += 2)
         {
 
             var isDir = Convert.ToBoolean(infoArray[i + 1]);
-            data[(i - 1) / 2] = (infoArray[i], isDir);
+            data.Add((infoArray[i], isDir));
         }
 
-        return data;
+        return data.ToArray();
     }
 
     /// <summary>

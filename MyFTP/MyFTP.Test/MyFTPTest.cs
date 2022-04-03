@@ -1,3 +1,5 @@
+namespace MyFTP.Test;
+
 using System;
 using System.IO;
 using System.Threading;
@@ -20,7 +22,7 @@ public class Tests
         _client = new Client("127.0.0.1", 80);
         _fileStream = new MemoryStream();
         _cancellationToken = new ();
-        _= _server.StartServer();
+        _server.StartServer();
         Thread.Sleep(5000);
     }
 
