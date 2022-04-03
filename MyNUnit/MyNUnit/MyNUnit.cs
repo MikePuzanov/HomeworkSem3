@@ -1,6 +1,7 @@
 ﻿namespace MyNUnit;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -14,6 +15,8 @@ using AttributesMyNUnit;
 /// </summary>
 public class MyNUnit
 {
+    private ConcurrentBag<(string, string)> messages;
+
     /// <summary>
     /// запуск тестов из .dll 
     /// </summary>
@@ -23,49 +26,45 @@ public class MyNUnit
     {
         var dlls = Directory.GetFiles(path, "*.dll");
         var tasks = new Task<List<(string, string)>>[dlls.Length];
-        var message = new List<(string, string)>();
-        Parallel.ForEach(dlls,dll => DoTestFromDll(dll, message));
-        return message.ToArray();
+        messages = new();
+        Parallel.ForEach(dlls, dll => DoTestFromDll(dll));
+        return messages.ToArray();
     }
-        
-    private void DoTestFromDll(string dllPath, List<(string, string)> message)
+
+    private void DoTestFromDll(string dllPath)
     {
         var dll = Assembly.LoadFrom(dllPath);
         var classes = dll.ExportedTypes.Where(t => t.IsClass);
-        Parallel.ForEach(classes, c => DoWorkInClass(c, message));
+        Parallel.ForEach(classes, c => DoWorkInClass(c));
     }
 
-    private void DoWorkInClass(Type classFromDll, List<(string, string)> messagesForUser)
+    private void DoWorkInClass(Type classFromDll)
     {
-        var after = new List<MethodInfo>();
-        var before = new List<MethodInfo>();
-        var beforeClass = new List<MethodInfo>();
-        var afterClass = new List<MethodInfo>();
-        var tests = new List<MethodInfo>();
+        var testAttributes = new TestAttributes();
         var methods = classFromDll.GetMethods();
-        Parallel.ForEach(methods, method => GetAttributesAndDoBeforeAndAfterClass(method, after, before, beforeClass, afterClass, tests, messagesForUser));
-        Parallel.ForEach(beforeClass, method => RunMethodsWithAttributes(method, messagesForUser, null));
-            
-        if (tests.Count < 1)
+        Parallel.ForEach(methods, method => GetAttributesAndDoBeforeAndAfterClass(method, testAttributes));
+        RunMethodsWithAttributes(testAttributes.BeforeClass, null);
+
+        if (testAttributes.Tests.Count < 1)
         {
             return;
         }
-        messagesForUser.Add(($"Проверка тестов из {classFromDll.Name}", ""));
+        messages.Add(($"Проверка тестов из {classFromDll.Name}", ""));
 
-        Parallel.ForEach(tests, test => DoTest(test, messagesForUser, before, after, classFromDll));
-        Parallel.ForEach(afterClass, method => RunMethodsWithAttributes(method, messagesForUser, null));
+        Parallel.ForEach(testAttributes.Tests, test => DoTest(test, testAttributes, classFromDll));
+        RunMethodsWithAttributes(testAttributes.AfterClass, null);
     }
 
-    private void DoTest(MethodInfo test, List<(string, string)> messagesFromCurrentTest, List<MethodInfo> before,
-        List<MethodInfo> after, Type classDll)
+    private void DoTest(MethodInfo test, TestAttributes testAttributes, Type classDll)
     {
         var attribute = (Test)Attribute.GetCustomAttribute(test, typeof(Test));
         if (attribute.Ignore != null)
         {
+            messages.Add(($"Тест {test.Name} был игнорирован", ""));
             return;
         }
-        object classInstance = Activator.CreateInstance(classDll);    
-        Parallel.ForEach(before, method => RunMethodsWithAttributes(method, messagesFromCurrentTest, classInstance));
+        object classInstance = Activator.CreateInstance(classDll);
+        RunMethodsWithAttributes(testAttributes.Before, classInstance);
         var message = ("", "");
         var watch = new Stopwatch();
         watch.Start();
@@ -82,7 +81,7 @@ public class MyNUnit
             }
             else if (exception.InnerException.GetType() != attribute.Expected)
             {
-                message = ($"Тест {test.Name} не пройден: ожидалось исключения типа {attribute.Expected}, возникло {exception.InnerException.GetType()}", $"Время: {watch.ElapsedMilliseconds} ms");
+                message = ($"Тест {test.Name} не пройден: ожидалось исключение типа {attribute.Expected}, возникло {exception.InnerException.GetType()}", $"Время: {watch.ElapsedMilliseconds} ms");
             }
             else
             {
@@ -100,13 +99,13 @@ public class MyNUnit
                 }
                 else
                 {
-                    message = ($"Тест {test.Name} не пройден: ожидалось исключения типа {attribute.Expected}", $"Время: {watch.ElapsedMilliseconds} ms");
+                    message = ($"Тест {test.Name} не пройден: ожидалось исключение типа {attribute.Expected}", $"Время: {watch.ElapsedMilliseconds} ms");
                 }
             }
         }
-        messagesFromCurrentTest.Add(message);
-            
-        Parallel.ForEach(after, method => RunMethodsWithAttributes(method, messagesFromCurrentTest, classInstance));
+        messages.Add(message);
+
+        RunMethodsWithAttributes(testAttributes.After, classInstance);
     }
 
     private void AddMethod(Attribute[] attributes, MethodInfo method, List<MethodInfo> list)
@@ -117,72 +116,91 @@ public class MyNUnit
         }
     }
 
-    private int CheckAttributesInMethod(Attribute[] attribute)
+    private void RunMethodsWithAttributes(List<MethodInfo> methods, object classIntstase)
     {
-        if (attribute.Length > 0)
+        foreach (MethodInfo method in methods)
         {
-            return 1;
-        }
-
-        return 0;
-    }
-        
-    private void RunMethodsWithAttributes(MethodInfo method, List<(string, string)> messagesForUser, object ClassIntstase)
-    {
-        try
-        {
-            method.Invoke(ClassIntstase, null);
-        }
-        catch (Exception e)
-        {
-            messagesForUser.Add(($"В методе {method.Name} возникло исключение: {e.InnerException.GetType()}", ""));
-        }
+            try
+            {
+                method.Invoke(classIntstase, null);
+            }
+            catch (Exception e)
+            {
+                messages.Add(($"В методе {method.Name} возникло исключение: {e.InnerException.GetType()}", ""));
+            }
+        }     
     }
 
-    private void GetAttributesAndDoBeforeAndAfterClass(MethodInfo method, List<MethodInfo> after,
-        List<MethodInfo> before, List<MethodInfo> beforeClass, List<MethodInfo> afterClass, List<MethodInfo> tests,
-        List<(string, string)> messagesForUser)
+    private Attribute[][] GetCountAttributes(MethodInfo method)
     {
-        var attributesTest = Attribute.GetCustomAttributes(method).Where(t => t.GetType() == typeof(Test)).ToArray();
-        var attributesBefore = Attribute.GetCustomAttributes(method).Where(t => t.GetType() == typeof(Before)).ToArray();
-        var attributesAfter = Attribute.GetCustomAttributes(method).Where(t => t.GetType() == typeof(After)).ToArray();
-        var attributesBeforeClass = Attribute.GetCustomAttributes(method).Where(t => t.GetType() == typeof(BeforeClass)).ToArray();
-        var attributesAfterClass = Attribute.GetCustomAttributes(method).Where(t => t.GetType() == typeof(AfterClass)).ToArray();
+        var types = new Type[] { typeof(Before), typeof(BeforeClass), typeof(Test), typeof(AfterClass), typeof(After)};
+        var typesCount = new Attribute[5][];
+        for (int i = 0; i < types.Length; i++)
+        {
+            typesCount[i] = Attribute.GetCustomAttributes(method).Where(t => t.GetType() == types[i]).ToArray();
+        }
+        return typesCount;
+    }
+
+    private int GetSumOfAttributesInMethod(Attribute[][] array)
+    {
         var count = 0;
-        count += CheckAttributesInMethod(attributesTest);
-        count += CheckAttributesInMethod(attributesAfter);
-        count += CheckAttributesInMethod(attributesBefore);
-        count += CheckAttributesInMethod(attributesAfterClass);
-        count += CheckAttributesInMethod(attributesBeforeClass);
-        if (count > 1)
+        for (int i = 0;i < array.Length;i++)
         {
-            messagesForUser.Add(($"Метод {method.Name} имеет два несовместимых атрибута", ""));
+            count += array[i].Length;
+        }
+        return count;
+    }
+
+    private void GetAttributesAndDoBeforeAndAfterClass(MethodInfo method, TestAttributes testAttributes)
+    { 
+        var countOfAttributes = GetCountAttributes(method);
+        if (GetSumOfAttributesInMethod(countOfAttributes) > 1)
+        {
+            messages.Add(($"Метод {method.Name} имеет два несовместимых атрибута", ""));
             return;
         }
-        AddMethod(attributesTest, method, tests);
-        AddMethod(attributesBefore, method, before);
-        AddMethod(attributesAfter, method, after);
-        if (attributesBeforeClass.Length != 0)
-        {
-            if (method.IsStatic)
-            { 
-                beforeClass.Add(method);
-            }
-            else
-            {
-                messagesForUser.Add(($"Метод {method.Name} содержит атрибут BeforeClass, но не является статическим", ""));
-            }
-        }
-        if (attributesAfterClass.Length != 0)
+        AddMethod(countOfAttributes[0], method, testAttributes.Before);
+        AddMethod(countOfAttributes[2], method, testAttributes.Tests);
+        AddMethod(countOfAttributes[4], method, testAttributes.After);
+        if (countOfAttributes[1].Length != 0)
         {
             if (method.IsStatic)
             {
-                afterClass.Add(method);
+                testAttributes.BeforeClass.Add(method);
             }
             else
             {
-                messagesForUser.Add(($"Метод {method.Name} содержит атрибут AfterClass, но не является статическим", ""));
+                messages.Add(($"Метод {method.Name} содержит атрибут BeforeClass, но не является статическим", ""));
             }
         }
+        if (countOfAttributes[3].Length != 0)
+        {
+            if (method.IsStatic)
+            {
+                testAttributes.AfterClass.Add(method);
+            }
+            else
+            {
+                messages.Add(($"Метод {method.Name} содержит атрибут AfterClass, но не является статическим", ""));
+            }
+        }
+    }
+    private class TestAttributes
+    {
+        public TestAttributes()
+        {
+            After = new();
+            Before = new();
+            BeforeClass = new();
+            AfterClass = new();
+            Tests = new();
+        }
+
+        public List<MethodInfo> After { get; set; }
+        public List<MethodInfo> Before { get; set; }
+        public List<MethodInfo> BeforeClass { get; set; }
+        public List<MethodInfo> AfterClass { get; set; }
+        public List<MethodInfo> Tests { get; set; }
     }
 }

@@ -8,8 +8,4 @@ using System;
 [AttributeUsage(AttributeTargets.Method)]
 public class BeforeClass : Attribute
 {
-    public BeforeClass()
-    {
-            
-    }
 }
