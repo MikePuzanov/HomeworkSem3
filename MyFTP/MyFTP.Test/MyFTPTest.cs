@@ -41,7 +41,7 @@ public class Tests
     [Test]
     public void ListInvalidFileNameTest()
     {
-        Assert.ThrowsAsync<FileNotFoundException>(() =>  _client.Get("Text.txt", _fileStream, _cancellationToken));
+        Assert.ThrowsAsync<FileNotFoundException>(() => _client.Get("Text.txt", _fileStream, _cancellationToken));
     }
 
     [Test]

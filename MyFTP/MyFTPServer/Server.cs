@@ -30,7 +30,7 @@ public class Server
         _listener.Start();
         while (!_tokenSource.IsCancellationRequested)
         {
-            using var client = await _listener.AcceptTcpClientAsync();
+            var client = await _listener.AcceptTcpClientAsync();
             task.Add(Working(client));
         }
         await Task.WhenAll(task);
@@ -48,25 +48,28 @@ public class Server
     /// </summary>
     private async Task Working(TcpClient client)
     {
-        using var stream = client.GetStream();
-        using var reader = new StreamReader(stream);
-        using var writer = new StreamWriter(stream);
-        var request = await reader.ReadLineAsync();
-        var (command, path) = (request?.Split()[0], request?.Split()[1]);
-        switch (command)
+        using (client)
         {
-            case "1":
-                await List(writer, path);
-            break;
-            case "2":
-                await Get(writer, path, stream);
-            break;
-            case "!exit":
-                StopServer();
-            break;
-            default:
-                await writer.WriteAsync("Ваш протокол сломан!");
-            break;
+            using var stream = client.GetStream();
+            using var reader = new StreamReader(stream);
+            using var writer = new StreamWriter(stream);
+            var request = await reader.ReadLineAsync();
+            var (command, path) = (request?.Split()[0], request?.Split()[1]);
+            switch (command)
+            {
+                case "1":
+                    await List(writer, path);
+                    break;
+                case "2":
+                    await Get(writer, path, stream);
+                    break;
+                case "!exit":
+                    StopServer();
+                    break;
+                default:
+                    await writer.WriteAsync("Ваш протокол сломан!");
+                    break;
+            }
         }
     }
 
